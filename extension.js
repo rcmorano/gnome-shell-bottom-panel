@@ -359,7 +359,7 @@ WorkspaceSwitcher.prototype = {
 
 
 
-MessageTray.MessageTray.prototype.toggleState = function() {
+MessageTray.MessageTray.prototype.toggle = function() {
     if (this._summaryState == MessageTray.State.SHOWN) {
         this._pointerInSummary = false;
     }
@@ -382,7 +382,7 @@ MessageButton.prototype = {
         this.messageLabel = new St.Label({ text: '!' });
         this.actor.set_child(this.messageLabel);
         this.actor.connect('clicked', Lang.bind(this, function() {
-            Main.messageTray.toggleState();
+            Main.messageTray.toggle();
         }));
     }
 };
@@ -475,9 +475,9 @@ function main(meta) {
 
     MessageTray.MessageTray.prototype._showTray = function() {
         let primary = Main.layoutManager.primaryMonitor;
-        let h = this._overviewVisible ? 0 : bottomPanel.actor.get_theme_node().get_height();
+        let h = bottomPanel._overviewVisible ? 0 : bottomPanel.actor.get_theme_node().get_height();
         this._tween(this.actor, '_trayState', MessageTray.State.SHOWN,
-                    { y: primary.y + primary.height - this.actor.height - h,
+                    { y: - this.actor.height - h,
                       time: MessageTray.ANIMATION_TIME,
                       transition: 'easeOutQuad'
                     });
