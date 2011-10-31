@@ -357,6 +357,19 @@ WorkspaceSwitcher.prototype = {
     }
 };
 
+
+
+MessageTray.MessageTray.prototype.toggleState = function() {
+    if (this._summaryState == MessageTray.State.SHOWN) {
+        this._pointerInSummary = false;
+    }
+    else {
+        this._pointerInSummary = true;
+    }
+    this._updateState();
+};
+
+
 function MessageButton() {
     this._init();
 }
@@ -397,7 +410,7 @@ BottomPanel.prototype = {
         this.actor.add(messageButton.actor);
 
         this._overviewVisible = false;
-        Main.layoutManager._chrome.addActor(this.actor);
+        Main.layoutManager._chrome.addActor(this.actor, { visibleInFullscreen: false, affectsStruts: true });
 
         this.actor.connect('style-changed', Lang.bind(this, this.relayout));
         global.screen.connect('monitors-changed', Lang.bind(this,
@@ -470,15 +483,8 @@ function main(meta) {
                     });
     };
 
-    MessageTray.MessageTray.prototype.toggleState = function() {
-        if (this._summaryState == MessageTray.State.SHOWN) {
-            this._pointerInSummary = false;
-        }
-        else {
-            this._pointerInSummary = true;
-        }
-        this._updateState();
-    };
+    global.screen.override_workspace_layout(Meta.ScreenCorner.TOPLEFT, false, 1, -1);
+
 
     WindowManager.WindowManager.prototype._showWorkspaceSwitcher =
     function(shellwm, binding, window, backwards) {
